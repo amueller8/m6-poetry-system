@@ -1,3 +1,4 @@
+from re import X
 import nltk
 import pronouncing
 
@@ -22,7 +23,8 @@ class Line:
         return num_syllables
         
     def __str__(self):
-        return input
+        x = self.input
+        return f'{self.input}'
     
     def __repr__(self):
         return "Line({input})".format(self.input)
