@@ -15,11 +15,11 @@ class WeatherCall():
     def __init__(self):
         self.key = API_Key().get_key()
 
-    def query_city_for_weather(city, state=""):
+    def query_city_for_weather(self,city, state=""):
         if state != "":
             state = ","+state
         base_url = "https://api.openweathermap.org/data/2.5/weather?"
-        total_query = base_url + "q=" + city + state + "&APPID=" + key
+        total_query = base_url + "q=" + city + state + "&APPID=" + self.key
 
         response = requests.get(total_query)
 
@@ -36,7 +36,7 @@ class WeatherCall():
 
             return [curr_temp, weather]
 
-    def determine_weather_sentiment(temp_weather_list):
+    def determine_weather_sentiment(self,temp_weather_list):
         temp = temp_weather_list[0]
         weather = temp_weather_list[0]
 
@@ -71,3 +71,28 @@ class WeatherCall():
             return -0.6
         else:
             return -1
+
+        #weather to sentiment later (add weather to top,)
+
+        
+
+#weather options:
+"""
+thunderstorm
+drizzle
+rain
+snow
+clouds
+mist
+smoke
+haze
+dust
+fog
+sand
+ash
+squall
+tornado
+clear
+
+extreme
+"""

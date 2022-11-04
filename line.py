@@ -18,6 +18,7 @@ class Line:
         for word in self.tokens:
             pronunciation_list = pronouncing.phones_for_word(word)
             #for now just picking first of list 
+            
             num_syllables += pronouncing.syllable_count(pronunciation_list[0])
         
         return num_syllables
