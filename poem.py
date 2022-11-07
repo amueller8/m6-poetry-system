@@ -6,7 +6,9 @@ from line import Line
 #nltk.download('vader_lexicon')
 
 class Poem:
-    #global
+    """
+    Defines a poem object
+    """
 
     def __init__(self, lines):
         self.lines = lines
@@ -120,26 +122,34 @@ class Poem:
                     return "ABBC"
                 
                 return "ABCD"
+    
+    def get_fitness(self, target):
+        #maybe in future reward rhyming rhyme schemes 
+        if not hasattr(self, 'fitness'):
+            self.fitness = abs(self.sentiment - target)
+        return abs(self.sentiment - target)
             
-            def __str__():
-                return"${text}".format(self.text)
+    def __str__(self):
+        return"${text}".format(self.text)
             
+    def __repr__(self):
+        return "Poem({0})".format(self.lines)
         
-def main():
-    l = Line("Roses are terrible")
-    l2 = Line("Violets are awful and blue")
-    l3 = Line("Sugar is blown")
-    l4 = Line("And so are")
+# def main():
+#     l = Line("Roses are terrible")
+#     l2 = Line("Violets are awful and blue")
+#     l3 = Line("Sugar is blown")
+#     l4 = Line("And so are")
 
-    p = Poem([l,l2,l3,l4])
-    p.analyze_sentiment()
-    print(p.sentiment)
-    h1 = p.find_rhyme_scheme_half(0,1)
-    h2 = p.find_rhyme_scheme_half(2,3)
-    print(h1,h2)
-    print(p.final_rhyme_scheme(h1,h2))
+#     p = Poem([l,l2,l3,l4])
+#     p.analyze_sentiment()
+#     print(p.sentiment)
+#     h1 = p.find_rhyme_scheme_half(0,1)
+#     h2 = p.find_rhyme_scheme_half(2,3)
+#     print(h1,h2)
+#     print(p.final_rhyme_scheme(h1,h2))
 
-main()
+# main()
 """
 Roses are red
 Violets are blue

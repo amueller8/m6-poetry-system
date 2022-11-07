@@ -29,9 +29,9 @@ class WeatherCall():
             #temperature, in kelvin
             curr_temp = main_info["temp"]
             #convert to F
-            print(curr_temp)
+            #print(curr_temp)
             curr_temp = (9/5) * (curr_temp - 273) + 32
-            print(curr_temp)
+            #print(curr_temp)
             weather = resp["weather"][0]["main"]
 
             return [curr_temp, weather]

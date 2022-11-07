@@ -18,17 +18,22 @@ class Line:
         for word in self.tokens:
             pronunciation_list = pronouncing.phones_for_word(word)
             #for now just picking first of list 
-            
-            num_syllables += pronouncing.syllable_count(pronunciation_list[0])
+            if pronunciation_list:
+                num_syllables += pronouncing.syllable_count(pronunciation_list[0])
+            else:
+                num_syllables += 0
         
         return num_syllables
+    
+    def get_input(self):
+        return self.input
         
     def __str__(self):
         x = self.input
         return f'{self.input}'
     
     def __repr__(self):
-        return "Line({input})".format(self.input)
+        return "Line({0})".format(self.get_input())
 
 
 def m():
