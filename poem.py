@@ -130,7 +130,7 @@ class Poem:
         return abs(self.sentiment - target)
             
     def __str__(self):
-        return"${text}".format(self.text)
+        return"{0}".format(self.text)
             
     def __repr__(self):
         return "Poem({0})".format(self.lines)

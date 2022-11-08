@@ -46,37 +46,99 @@ class GeneticAlgorithm:
 
         return lines
     
+    def pre_selection(self):
+        for i in self.inspiring_set:
+            i.analyze_sentiment()
+            
+    
     def selection(self):
+        """
+        Does selection.
+        Attempt to normalize to ints by * fitness by 50 and casting to int.
+        
+        """
         selected_poems = []
         total = 0
         for p in range(len(self.inspiring_set)):
-            total += self.inspiring_set[p].get_fitness(self.target_mood)
+            total += int(self.inspiring_set[p].get_fitness(self.target_mood)*50) 
 
-        self.inspiring_set.sort(key=lambda x: x.fitness)
+        self.inspiring_set.sort(key=lambda x: (x.fitness*50))
         count = 0
         
         for i in range(2 * len(self.inspiring_set)):
             count = 0
-            random_number = random.SystemRandom().uniform(0,total)
+            random_number = random.randint(0,total)
+            #random_number = random.SystemRandom().uniform(0,total)
             for z in range(len(self.inspiring_set)):
-                count += self.inspiring_set[z].get_fitness(self.target_mood)
+                count += int(self.inspiring_set[z].get_fitness(self.target_mood) * 50)
                 if random_number <= count:
                     selected_poems.append(self.inspiring_set[z])
                     break
         return selected_poems
+    
+    def selection_2(self):
+        
+        self.pre_selection()
+        print(self.target_mood, " is mood. Weather is ", self.weather)
+        minDiff = 1 #sentiment between -1 and 1
+        poem = self.inspiring_set[1]
+        
+        for i in self.inspiring_set:
+            if abs(i.get_fitness(self.target_mood) - self.target_mood) <= minDiff:
+                minDiff = abs(i.get_fitness(self.target_mood) - self.target_mood)
+                poem = i
+               
+        
+        return poem, minDiff
+        
+
+    
+    def recombination(self, selected_poems):
+        """
+        The selected poems are recombined through crossover.
+        Try to match rhyme pattern at crossover point?
+
+        Args:
+            selected_poems (Poem[]): A list of the poems produced by
+            selection, which is double the size of the initial population.
+        """
+        new_poems = []
+        for i in range(0, len(selected_poems), 2):
+            if selected_poems[i].get_fitness() < \
+                    selected_poems[i + 1].get_fitness():
+                random_index = random.randint(0, int(
+                    selected_poems[i].get_fitness() * 50))
+            else:
+                random_index = random.randint(0, int(
+                    selected_poems[i + 1].get_fitness() * 50))
+            #hard code halfway split ??
+            #random_index = 2 
+            first_half = selected_poems[i].lines[0:random_index]
+            second_half = selected_poems[i + 1].lines[random_index:]
+            combined_list = self.check_fix_duplicates_recombination(first_half,
+                                                                    second_half
+                                                                    )
+            new_poem = Poem(combined_list)
+                    
+            new_poems.append(new_poem)
+        self.inspiring_set = new_poems
 
     
     
 def main():
     ga = GeneticAlgorithm(2, "Boston")
     print(len(ga.inspiring_set))
-    for i in range(10):
-        ga.inspiring_set[i].analyze_sentiment()
-        print("fitness",ga.inspiring_set[i].get_fitness(ga.target_mood))
-        print("fitness assigned",ga.inspiring_set[i].fitness)
+    #ga.pre_selection()
     #for poem in ga.inspiring_set:
         #print("x",poem.lines)
-    print(ga.selection())
+    #print(len(ga.selection()))
+    poem, diff = ga.selection_2()
+    print("Poem that best fits mood, with a score of ", diff,  "is ", poem)
+    ga2 = GeneticAlgorithm(2, "Dubai")
+    poem, diff = ga2.selection_2()
+    print("Poem that best fits mood, with a score of ", diff,  "is ", poem)
+   
+
 main()
 
 
