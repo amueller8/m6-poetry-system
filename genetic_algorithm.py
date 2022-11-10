@@ -75,6 +75,7 @@ class GeneticAlgorithm:
                     selected_poems.append(self.inspiring_set[z])
                     break
         return selected_poems
+
     
     def selection_2(self):
         
@@ -104,13 +105,13 @@ class GeneticAlgorithm:
         """
         new_poems = []
         for i in range(0, len(selected_poems), 2):
-            if selected_poems[i].get_fitness() < \
-                    selected_poems[i + 1].get_fitness():
+            if selected_poems[i].get_fitness(self.target_mood) < \
+                    selected_poems[i + 1].get_fitness(self.target_mood):
                 random_index = random.randint(0, int(
-                    selected_poems[i].get_fitness() * 50))
+                    selected_poems[i].get_fitness(self.target_mood) * 50))
             else:
                 random_index = random.randint(0, int(
-                    selected_poems[i + 1].get_fitness() * 50))
+                    selected_poems[i + 1].get_fitness(self.target_mood) * 50))
             #hard code halfway split ??
             #random_index = 2 
             first_half = selected_poems[i].lines[0:random_index]
@@ -122,6 +123,21 @@ class GeneticAlgorithm:
                     
             new_poems.append(new_poem)
         self.inspiring_set = new_poems
+    
+    def mutate_synonym(self, poem):
+        """
+        
+        """
+        #https://www.analyticsvidhya.com/blog/2022/03/keyword-extraction-methods-from-documents-in-nlp/
+        #identify a key word
+        key_word = poem.return_hot_words(1)[0]
+
+        #now, find synonyms
+        synonyms, antonyms = poem.get_synonyms_antonyms(key_word)
+        print(synonyms)
+        print(antonyms )
+
+        #otherwise, 
 
     
     
@@ -137,7 +153,7 @@ def main():
     ga2 = GeneticAlgorithm(2, "Dubai")
     poem, diff = ga2.selection_2()
     print("Poem that best fits mood, with a score of ", diff,  "is ", poem)
-   
+    print(ga.mutate_synonym(poem))
 
 main()
 
