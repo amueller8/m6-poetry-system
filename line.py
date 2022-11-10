@@ -37,6 +37,7 @@ class Line:
              new_w_str = new_word[0] + " "
 
         self.input = self.input[0:start] + new_w_str + self.input[start+len(old_word):]
+        
 
     def update_syllables(self, old_word_syll, new_word_syll):
         self.syllables -= old_word_syll
@@ -72,13 +73,17 @@ class Line:
         
         #select a random type 
         matches = []
+        type = random.choice(tags)
+        iterations = 0
         while(len(matches) == 0):
             type = random.choice(tags)
             for t in range(len(self.tags)):
                 #print(self.tags[t], "is ", type, "?\n")
                 if self.tags[t] == type or type in self.tags[t]:
                     matches.append(t)
-
+            iterations += 1
+            if iterations > 10:
+                return None
        # print("\nMATCHES",matches)
 
         if len(matches) > 1:

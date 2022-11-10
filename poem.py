@@ -140,51 +140,63 @@ class Poem:
         """
         Select a random line for mutation by word.
         """
-        #synonyms?
 
-        line = random.choice(self.lines)
+        #pick which line we mutate
+        line_index = random.randint(0, len(self.lines)-1)
+        line = self.lines[line_index]
+        #pick word from line (get word and POS tag)
         word_sel = line.get_random_word()
-        word = word_sel[0]
-        tag = word_sel[1]
+        if word_sel != None:
+            word = word_sel[0]
+            tag = word_sel[1]
+        else:
+            return
     
         word_syns = self.get_synonyms_antonyms(word)[0]
         word_syns = list(word_syns)
-        word_syns = word_syns[0:len(word_syns)//2]
+        len_word_syns = len(word_syns)
+        word_syns = word_syns[0:len_word_syns//2]
+        #get first half 
         # we want a synonym with same pos tag
 
-        syn = nltk.word_tokenize(random.choice(word_syns))
-        print(word,syn, word_syns, nltk.pos_tag(syn), tag)
-        #if nltk.pos_tag(syn) == tag:
+        if len(word_syns) > 0:
+            print(word_syns)
+            syn = nltk.word_tokenize(random.choice(word_syns))
+            print("syn", syn)
+            #print(word,syn, word_syns, nltk.pos_tag(syn), tag)
 
-        print("sub ", syn[0], "for ", word)
-        tok = line.tokens.index(word)
-        line.tokens[tok] = syn[0]
-        print(line.tokens)
-        #tag SHOULD stay same...
-        #line.tags[tok] 
+            #print("sub ", syn[0], "for ", word)
+            tok = line.tokens.index(word)
+            line.tokens[tok] = syn[0]
+            
+            print("New line tokesn are",line.tokens)
 
-        #update text
+            #if syllables different, update syllables
+            word_syllables = pronouncing.phones_for_word(word)
+            syn_syllables = pronouncing.phones_for_word(syn[0])
+            try:
+                old_syllables = pronouncing.syllable_count(word_syllables[0])
+                new_syllables = pronouncing.syllable_count(syn_syllables[0])
+
+                if ( old_syllables != new_syllables):
+                    line.update_syllables(old_syllables, new_syllables)
+            except IndexError:
+                pass
+    
+
+            #update text of line 
+            line.update_text(word, syn[0])
+    
+            #if word == line.last_word: 
+                #print("last word")
+                #we want rhymes
+
+            #UPDATE THE LINE IN ThE POEM TOO THO
+            self.lines[line_index] = line
+
+            #fix poem text
+            self.update_poem_text()
         
-        #if syllables different, update syllables
-        word_syllables = pronouncing.phones_for_word(word)
-        syn_syllables = pronouncing.phones_for_word(syn[0])
-
-        old_syllables = pronouncing.syllable_count(word_syllables[0])
-        new_syllables = pronouncing.syllable_count(word_syllables[0])
-
-
-        if ( old_syllables != new_syllables):
-            line.update_syllables(old_syllables, new_syllables)
-
-        print(line)
-        line.update_text(word, syn[0])
-        print(line)
-
-        if word == line.last_word: 
-            print("last word")
-            #we want rhymes
-        
-
     def get_synonyms_antonyms(self, word):
         """
         https://www.holisticseo.digital/python-seo/nltk/wordnet
@@ -199,6 +211,10 @@ class Poem:
         
         return [set(synonyms), set(antonyms)]
 
+    def update_poem_text(self):
+        self.text = ""
+        for line in self.lines:
+                self.text += line.input + "\n"
 
 
     def __str__(self):
@@ -216,17 +232,19 @@ def main():
 
     p = Poem([l,l2,l3,l4])
     p.analyze_sentiment()
-    print(p.sentiment)
-    h1 = p.find_rhyme_scheme_half(0,1)
-    h2 = p.find_rhyme_scheme_half(2,3)
-    print(h1,h2)
-    print(p.final_rhyme_scheme(h1,h2))
+    #print(p.sentiment)
+    #h1 = p.find_rhyme_scheme_half(0,1)
+    #h2 = p.find_rhyme_scheme_half(2,3)
+    #print(h1,h2)
+    #print(p.final_rhyme_scheme(h1,h2))
 
+    print(p)
     print(p.mutate_word())
+    print(p)
 
 #nltk.download('wordnet')
 #nltk.download('omw-1.4')
-main()
+#main()
 
 """
 Roses are red
